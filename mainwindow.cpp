@@ -26,26 +26,30 @@ void MainWindow::on_addItemButton_clicked()
     bool ok;
 
     QString text = QInputDialog::getText(this, tr("Добавить элемент"), tr("Текст элемента:"), QLineEdit::Normal, "", &ok);
-    if (ok && !text.isEmpty()) {
+    if (ok && !text.isEmpty() && !text.contains(" "))
+    {
         QString id = QInputDialog::getText(this, tr("Добавить элемент"), tr("ID задачи (только цифры):"), QLineEdit::Normal, "", &ok);
-        if (ok && !id.isEmpty()) {
-            if (id.toInt(&ok) != 0 && ok) {
-                QString description = QInputDialog::getText(this, tr("Добавить элемент"), tr("Описание задачи:"), QLineEdit::Normal, "", &ok);
-                if (ok) {
-                    QString displayText = " (ID: " + id + ") " + text + " - " + description;
-                    ui->tasklistWidget->addItem(displayText);
-                }
-                else {
-                    QMessageBox::warning(this, tr("Предупреждение"), tr("Описание задачи не может быть пустым"));
-                }
+        if (ok && !id.isEmpty() && id.toInt(&ok) != 0 && !id.contains(" "))
+        {
+            QString description = QInputDialog::getText(this, tr("Добавить элемент"), tr("Описание задачи:"), QLineEdit::Normal, "", &ok);
+            if (ok && !description.contains(" "))
+            {
+                QString displayText = " (ID: " + id + ") " + text + " - " + description;
+                ui->tasklistWidget->addItem(displayText);
             }
-            else {
-                QMessageBox::warning(this, tr("Предупреждение"), tr("ID задачи должен состоять только из цифр"));
+            else
+            {
+                QMessageBox::warning(this, tr("Предупреждение"), tr("Описание задачи не может быть пустым или содержать пробелы"));
             }
         }
-        else {
-            QMessageBox::warning(this, tr("Предупреждение"), tr("ID задачи не может быть пустым"));
+        else
+        {
+            QMessageBox::warning(this, tr("Предупреждение"), tr("ID задачи должен состоять только из цифр и не содержать пробелов"));
         }
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Предупреждение"), tr("Текст элемента не может быть пустым или содержать пробелы"));
     }
 }
 
